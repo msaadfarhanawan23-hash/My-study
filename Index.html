@@ -1,0 +1,166 @@
+Study Website for iPhone: One File, Free, No Subscription
+This is the simple version made for an iPhone. Everything is in ONE file called index.html. It has a separate page for Home, Physics, Maths, Computer, English, Urdu, Islamiyat, Tarjuma-tul-Quran, Exam Prep and 3D Diagrams.
+Step 1: Get your free AI key (2 minutes)
+1. Open Safari on your iPhone and go to aistudio.google.com
+2. Sign in with your Google account.
+3. Tap Get API key, then Create API key.
+4. Tap the key to copy it. Keep it safe, do not share it.
+Step 2: Copy the code
+1. Scroll down to the big code block below.
+2. Press and hold on the code, choose Select All, then Copy.
+3. In the code, find the words PASTE_YOUR_KEY_HERE and replace them with your key. To do this easily, paste the whole code into the Notes app first, edit it there, then copy it again.
+Step 3: Put it online for free
+1. In Safari go to github.com and make a free account.
+2. Tap the plus icon, then New repository. Name it study. Choose Public. Tap Create.
+3. Tap Add file, then Create new file. Name it index.html and paste your edited code.
+4. Tap Commit changes.
+5. Go to Settings, then Pages. Under Branch choose main and tap Save.
+6. After about two minutes your site is live at yourusername.github.io/study
+7. In Safari tap Share, then Add to Home Screen, and it works like an app.
+Note: a public repository shows your key to anyone who looks very closely. For personal use on the free tier this is a small risk. If you worry, make a new key any time and replace the old one.
+The full code
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Study Website</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
+header{background:#1e293b;padding:14px;text-align:center;font-size:20px;position:sticky;top:0}
+.page{display:none;max-width:800px;margin:16px auto;padding:0 14px}
+.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.tile{background:#334155;color:#fff;padding:22px 8px;border-radius:12px;text-align:center;font-size:17px}
+.card{background:#1e293b;padding:14px;border-radius:12px;margin-bottom:12px}
+textarea,select{width:100%;padding:10px;border-radius:8px;border:none;font-size:16px;box-sizing:border-box;margin-bottom:8px}
+button{background:#38bdf8;color:#0f172a;border:none;padding:12px 18px;border-radius:8px;font-size:16px}
+.back{background:#475569;color:#fff;margin-bottom:10px}
+.ans{white-space:pre-wrap;line-height:1.7}
+canvas{width:100%;border-radius:12px;background:#000}
+</style>
+</head>
+<body>
+<header>My Study Website</header>
+
+<div class="page active" id="home">
+<div class="grid">
+<div class="tile" onclick="go('Physics')">Physics</div>
+<div class="tile" onclick="go('Maths')">Maths</div>
+<div class="tile" onclick="go('Computer')">Computer</div>
+<div class="tile" onclick="go('English')">English</div>
+<div class="tile" onclick="go('Urdu')">Urdu</div>
+<div class="tile" onclick="go('Islamiyat')">Islamiyat</div>
+<div class="tile" onclick="go('Tarjuma-tul-Quran')">Tarjuma-tul-Quran</div>
+<div class="tile" onclick="go('Exam Prep')">Exam Prep</div>
+<div class="tile" onclick="go('3D')">3D Diagrams</div>
+</div>
+</div>
+
+<div class="page" id="tutor">
+<button class="back" onclick="home()">Back to Home</button>
+<h2 id="title"></h2>
+<div class="card">
+<textarea id="q" rows="5" placeholder="Type your question or topic here..."></textarea>
+<select id="lang"><option>English</option><option>Urdu</option><option>Hindi</option></select>
+<select id="mode"><option value="learn">Teach me this topic</option><option value="solve">Solve step by step</option><option value="exam">Exam questions and quiz</option><option value="short">Quick revision notes</option></select>
+<button onclick="ask()">Ask Tutor</button>
+</div>
+<div class="card ans" id="ans">Your answer will appear here.</div>
+</div>
+
+<div class="page" id="three">
+<button class="back" onclick="home()">Back to Home</button>
+<h2>3D Diagrams</h2>
+<div class="card">
+<select id="shape" onchange="draw()">
+<option value="cube">Cube</option>
+<option value="sphere">Sphere</option>
+<option value="cone">Cone</option>
+<option value="cylinder">Cylinder</option>
+<option value="torus">Torus</option>
+<option value="atom">Atom model</option>
+</select>
+<p>The shape spins by itself. Use it to understand 3D shapes in maths and physics.</p>
+</div>
+<canvas id="c" height="320"></canvas>
+</div>
+
+<script>
+const API_KEY="AQ.Ab8RN6KvRf7xj6LLaAksz7DsSwcDQXegO2z7T8G0hgdcknOhhA";
+const MODEL="gemini-2.0-flash";
+let subject="";
+
+function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function home(){show('home')}
+function go(name){
+ if(name==='3D'){show('three');draw();return}
+ subject=name;
+ document.getElementById('title').textContent=name+' Tutor';
+ document.getElementById('ans').textContent='Your answer will appear here.';
+ show('tutor');
+}
+
+async function ask(){
+ const q=document.getElementById('q').value;
+ const lang=document.getElementById('lang').value;
+ const mode=document.getElementById('mode').value;
+ const out=document.getElementById('ans');
+ if(!q.trim()){out.textContent='Please type a question first.';return}
+ const modes={learn:'Teach the idea first in simple words with an everyday example, then the details.',solve:'Solve it step by step, explaining each step, and show formulas clearly.',exam:'Give 5 likely exam questions with answers, in Punjab Board style.',short:'Give short revision notes with the key points and formulas.'};
+ const prompt='You are a patient tutor for a first year (FSc/ICS/FA level) student of the Punjab Board in Pakistan. Subject: '+subject+'. Reply in simple '+lang+'. '+modes[mode]+' Student input: '+q;
+ out.textContent='Thinking...';
+ try{
+  const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+MODEL+':generateContent?key='+API_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+  const d=await r.json();
+  out.textContent=d.candidates?d.candidates[0].content.parts[0].text:'Something went wrong. Check your key.';
+ }catch(e){out.textContent='No internet or error. Try again.'}
+}
+
+let renderer,scene,camera,obj,started=false;
+function draw(){
+ const canvas=document.getElementById('c');
+ if(!renderer){
+  renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});
+  renderer.setSize(canvas.clientWidth,320,false);
+  camera=new THREE.PerspectiveCamera(60,canvas.clientWidth/320,0.1,100);
+  camera.position.z=4;
+ }
+ scene=new THREE.Scene();
+ scene.add(new THREE.AmbientLight(0xffffff,0.6));
+ const light=new THREE.DirectionalLight(0xffffff,0.8);light.position.set(3,3,5);scene.add(light);
+ const s=document.getElementById('shape').value;
+ const mat=new THREE.MeshStandardMaterial({color:0x38bdf8,wireframe:false});
+ obj=new THREE.Group();
+ if(s==='cube')obj.add(new THREE.Mesh(new THREE.BoxGeometry(1.6,1.6,1.6),mat));
+ if(s==='sphere')obj.add(new THREE.Mesh(new THREE.SphereGeometry(1.1,32,32),mat));
+ if(s==='cone')obj.add(new THREE.Mesh(new THREE.ConeGeometry(1,2,32),mat));
+ if(s==='cylinder')obj.add(new THREE.Mesh(new THREE.CylinderGeometry(0.9,0.9,2,32),mat));
+ if(s==='torus')obj.add(new THREE.Mesh(new THREE.TorusGeometry(1,0.4,16,60),mat));
+ if(s==='atom'){
+  obj.add(new THREE.Mesh(new THREE.SphereGeometry(0.35,24,24),new THREE.MeshStandardMaterial({color:0xf87171})));
+  [0,1,2].forEach(i=>{
+   const ring=new THREE.Mesh(new THREE.TorusGeometry(1.3,0.02,8,80),new THREE.MeshBasicMaterial({color:0xffffff}));
+   ring.rotation.x=i*Math.PI/3;ring.rotation.y=i*Math.PI/5;obj.add(ring);
+   const e=new THREE.Mesh(new THREE.SphereGeometry(0.1,16,16),new THREE.MeshBasicMaterial({color:0xfacc15}));
+   e.position.set(1.3,0,0);ring.add(e);
+  });
+ }
+ scene.add(obj);
+ if(!started){started=true;loop()}
+}
+function loop(){requestAnimationFrame(loop);if(obj){obj.rotation.y+=0.01;obj.rotation.x+=0.004}if(renderer&&scene)renderer.render(scene,camera)}
+</script>
+</body>
+</html>
+What each page does
+* Home: nine big buttons, one for every subject and tool.
+* Subject pages: type a question, pick English, Urdu or Hindi, and pick a mode: teach me, solve step by step, exam questions, or quick revision notes.
+* Exam Prep: same tutor, use the exam questions mode with your chapter name.
+* 3D Diagrams: spinning cube, sphere, cone, cylinder, torus and an atom model.
+Next improvements we can add later
+* Photo upload of homework
+* Voice questions
+* Chapter lists for each Punjab Board book
+* Save your past answers on the phone
